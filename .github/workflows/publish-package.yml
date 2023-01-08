@@ -1,0 +1,20 @@
+name: Publish package
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '24'
+          elixir-version: '1.12.2'
+      - name: Test and publish
+        run: make HEX_API_KEY=${{ secrets.HEX_API_KEY }} test publish

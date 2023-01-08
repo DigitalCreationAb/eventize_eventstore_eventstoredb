@@ -1,4 +1,9 @@
 defmodule Eventize.Eventstore.EventStoreDB do
+  @moduledoc """
+  A implimentation of the `Eventize.Persistence.EventStore`
+  behaviour that uses [EventStoreDB](https://www.eventstore.com/).
+  """
+
   use Eventize.Persistence.EventStore
 
   alias Eventize.Eventstore.EventStoreDB.EventMapper
@@ -7,6 +12,8 @@ defmodule Eventize.Eventstore.EventStoreDB do
   require Spear.Records.Streams, as: Streams
 
   defmodule State do
+    @moduledoc false
+
     @type t :: %__MODULE__{serializer: atom, event_store: atom}
 
     defstruct serializer: Eventize.Serialization.JasonSerializer,

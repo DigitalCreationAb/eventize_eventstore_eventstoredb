@@ -1,21 +1,12 @@
-# EventizeEventstoreEventstoredb
+# Eventize EventStoreDB
 
-**TODO: Add description**
+A EventStoreDB implimentation for [Eventize](https://hex.pm/packages/eventize)
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `eventize_eventstore_eventstoredb` to your list of dependencies in `mix.exs`:
+Eventize EventStoreDB can be installed using [Hex](https://hex.pm/packages/eventize_eventstore_eventstoredb).
 
-```elixir
-def deps do
-  [
-    {:eventize_eventstore_eventstoredb, "~> 0.1.0"}
-  ]
-end
-```
+## Documentation
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/eventize_eventstore_eventstoredb](https://hexdocs.pm/eventize_eventstore_eventstoredb).
+Documentation can be found [here](https://hexdocs.pm/eventize_eventstore_eventstoredb).
 

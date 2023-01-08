@@ -5,6 +5,8 @@ SHELL := /bin/bash
 MAKEFLAGS += --warn-undefined-variables 
 MAKEFLAGS += --no-builtin-rules
 
+HEX_API_KEY ?=
+
 ifeq ($(OS), Windows_NT)
     DETECTED_OS := Windows
 endif
@@ -27,4 +29,6 @@ test: restore
 
 .PHONY: publish
 publish: build docs
-	mix hex.publish
+ifdef HEX_API_KEY
+	HEX_API_KEY=$(HEX_API_KEY) mix hex.publish --yes
+endif
