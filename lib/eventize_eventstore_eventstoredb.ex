@@ -193,7 +193,13 @@ defmodule Eventize.Eventstore.EventStoreDB do
             |> Enum.to_list()
 
           c ->
-            Spear.stream!(event_store, stream, from: start_version, raw?: true)
+            chunk_size = case c do
+              c when c > 128 ->
+                128
+              c -> c
+            end
+
+            Spear.stream!(event_store, stream, from: start_version, raw?: true, chunk_size: chunk_size)
             |> Stream.take(c)
             |> Stream.map(fn event -> EventMapper.to_event_data(event, serializer) end)
             |> Enum.to_list()

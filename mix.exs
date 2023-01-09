@@ -26,7 +26,7 @@ defmodule Eventize.EventStore.EventStoreDB.MixProject do
 
   defp package do
     [
-      files: ["lib", "mix.exs", ".formatter.exs", "README*", "LICENSE*", "test/support"],
+      files: ["lib", "mix.exs", ".formatter.exs", "README*", "LICENSE*"],
       maintainers: ["Mattias Jakobsson"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/DigitalCreationAb/eventize_eventstore_eventstoredb"}
