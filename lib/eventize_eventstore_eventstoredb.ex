@@ -58,7 +58,33 @@ defmodule Eventize.Eventstore.EventStoreDB do
       ) do
     case execute_read(state, stream_name, start, max_count) do
       {:ok, events} ->
-        {:reply, {:ok, events}, state}
+        version_response =
+          case {events, start, max_count} do
+            {[], :start, :all} ->
+              {:ok, :empty}
+
+            {[], :start, max} when is_integer(max) and max > 0 ->
+              {:ok, :empty}
+
+            {e, _, max} when (is_integer(max) and length(e) < max) or max == :all ->
+              version =
+                e
+                |> Enum.map(fn event -> event.sequence_number end)
+                |> Enum.max(&>=/2, fn -> :empty end)
+
+              {:ok, version}
+
+            _ ->
+              load_heighest_sequence_number(state, stream_name)
+          end
+
+        case version_response do
+          {:ok, v} ->
+            {:reply, {:ok, events, v}, state}
+
+          {:error, err} ->
+            {:reply, {:error, err}, state}
+        end
 
       {:error, err} ->
         {:reply, {:error, err}, state}
@@ -178,6 +204,36 @@ defmodule Eventize.Eventstore.EventStoreDB do
     "#{stream_name}-snapshots"
   end
 
+  defp load_heighest_sequence_number(
+         %State{event_store: event_store, serializer: serializer},
+         stream
+       ) do
+    try do
+      last_event =
+        Spear.stream!(event_store, stream,
+          direction: :backwards,
+          from: :end,
+          raw?: true,
+          chunk_size: 1
+        )
+        |> Stream.map(fn item -> EventMapper.to_event_data(item, serializer) end)
+        |> Enum.at(0)
+
+      case last_event do
+        nil ->
+          {:ok, :empty}
+
+        %EventData{
+          sequence_number: sequence_number
+        } ->
+          {:ok, sequence_number}
+      end
+    rescue
+      err ->
+        {:error, err}
+    end
+  end
+
   defp execute_read(
          %State{event_store: event_store, serializer: serializer},
          stream,
@@ -193,13 +249,20 @@ defmodule Eventize.Eventstore.EventStoreDB do
             |> Enum.to_list()
 
           c ->
-            chunk_size = case c do
-              c when c > 128 ->
-                128
-              c -> c
-            end
+            chunk_size =
+              case c do
+                c when c > 128 ->
+                  128
 
-            Spear.stream!(event_store, stream, from: start_version, raw?: true, chunk_size: chunk_size)
+                c ->
+                  c
+              end
+
+            Spear.stream!(event_store, stream,
+              from: start_version,
+              raw?: true,
+              chunk_size: chunk_size
+            )
             |> Stream.take(c)
             |> Stream.map(fn event -> EventMapper.to_event_data(event, serializer) end)
             |> Enum.to_list()

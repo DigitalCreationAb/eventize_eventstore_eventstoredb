@@ -1,7 +1,7 @@
 defmodule Eventize.EventStore.EventStoreDB.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
 
   def project do
     [
@@ -29,7 +29,9 @@ defmodule Eventize.EventStore.EventStoreDB.MixProject do
       files: ["lib", "mix.exs", ".formatter.exs", "README*", "LICENSE*"],
       maintainers: ["Mattias Jakobsson"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/DigitalCreationAb/eventize_eventstore_eventstoredb"}
+      links: %{
+        "GitHub" => "https://github.com/DigitalCreationAb/eventize_eventstore_eventstoredb"
+      }
     ]
   end
 
@@ -50,7 +52,7 @@ defmodule Eventize.EventStore.EventStoreDB.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:eventize, "~> 0.1.3"},
+      {:eventize, "~> 0.2.0"},
       {:spear, "~> 1.3"},
       {:jason, "~> 1.0"},
       {:elixir_uuid, "~> 1.2"},
